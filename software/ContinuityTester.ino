@@ -97,8 +97,11 @@ int main(void) {
     if(ACSR & (1<<ACO)) {                       // continuity detected?
       tmillis = 0;                              // reset millis counter
       TIMSK0 |= (1<<OCIE0B);                    // buzzer on
-    } else if(tmillis > DEBOUNCE)               // no continuity detected?
+      PORTB &= ~(1<<LED);                       // LED off
+    } else if(tmillis > DEBOUNCE) {              // no continuity detected?
       TIMSK0 &= ~(1<<OCIE0B);                   // buzzer off after debounce time
+      PORTB  = (1<<LED);                         // LED on
+    }
 
     if(tmillis > TIMEOUT) {                     // go to sleep?
       PORTB &= ~(1<<LED);                       // LED off
