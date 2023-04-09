@@ -85,7 +85,8 @@ int main(void) {
   DDRB   = (1<<LED) | (1<<BUZZER);              // LED and BUZZER pin as output
   PORTB  = (1<<LED) | (1<<REF) | (1<<PROBE);    // LED on, internal pullups for REF and PROBE
   OCR0A  = 127;                                 // TOP value for timer0
-  OCR0B  = 63;                                  // for generating 1000Hz buzzer tone
+  //OCR0B  = 63;                                  // for generating 1000Hz buzzer tone
+  OCR0B  = 78;                                  // for generating 800Hz buzzer tone (like CW)
   TCCR0A = (1<<WGM01);                          // set timer0 CTC mode
   TCCR0B = (1<<CS00);                           // start timer with no prescaler
   TIMSK0 = (1<<OCIE0A);                         // enable output compare match A interrupt
@@ -98,9 +99,9 @@ int main(void) {
       tmillis = 0;                              // reset millis counter
       TIMSK0 |= (1<<OCIE0B);                    // buzzer on
       PORTB &= ~(1<<LED);                       // LED off
-    } else if(tmillis > DEBOUNCE) {              // no continuity detected?
+    } else if(tmillis > DEBOUNCE) {               // no continuity detected?
       TIMSK0 &= ~(1<<OCIE0B);                   // buzzer off after debounce time
-      PORTB  = (1<<LED);                         // LED on
+      PORTB |=  (1<<LED);                       // LED on
     }
 
     if(tmillis > TIMEOUT) {                     // go to sleep?
